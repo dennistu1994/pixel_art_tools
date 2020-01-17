@@ -14,7 +14,17 @@ export default {
             use: [{
                 loader: 'babel-loader'
             }]
-        }]
+        }, {
+            test: /\.s[ac]ss$/i,
+            use: [
+                // Creates `style` nodes from JS strings
+                'style-loader',
+                // Translates CSS into CommonJS
+                'css-loader',
+                // Compiles Sass to CSS
+                'sass-loader',
+            ],
+        },]
     },
     resolve: {
         modules: [
@@ -24,7 +34,7 @@ export default {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            title: 'Custom template',
+            title: 'Playground',
             template: path.join(__dirname, 'src/index.template.html')
         }),
         new ScriptExtHtmlWebpackPlugin({
