@@ -12,7 +12,12 @@ export default {
             test: /\.js/,
             exclude: /(node_modules|bower_components)/,
             use: [{
-                loader: 'babel-loader'
+                loader: 'babel-loader',
+                options: {
+                    babelrc: true
+                }
+            }, {
+                loader: 'react-hot-loader/webpack'
             }]
         }, {
             test: /\.s[ac]ss$/i,
