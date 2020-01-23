@@ -1,16 +1,20 @@
+// @flow
 import React from 'react'
 import Controller from './controller/Controller';
 import './style.scss';
 
-export class CanvasRenderer extends React.Component {
+type Props = {};
+export class CanvasRenderer extends React.Component<Props> {
 
-    constructor(props){
-        super(props);
-        this.canvasElement = null;
-        this.controller = new Controller(this);
+    canvasElement: HTMLCanvasElement;
+    controller: Controller;
+
+    constructor(){
+        super();
+        this.controller = new Controller();
     }
 
-    onCanvasReady(canvasElement) {
+    onCanvasReady(canvasElement: HTMLCanvasElement) {
         this.canvasElement = canvasElement;
         this.controller.onCanvasReady(canvasElement);
     }

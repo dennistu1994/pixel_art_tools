@@ -12,5 +12,7 @@ src
 [options]
 module.system.node.resolve_dirname=node_modules
 module.system.node.resolve_dirname=src
+module.name_mapper='^react-icons$' -> 'flow/MockModule'
+module.name_mapper.extension='scss' -> 'flow/MockModule'
 
 [strict]

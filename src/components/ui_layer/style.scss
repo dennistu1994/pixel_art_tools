@@ -1,0 +1,17 @@
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,700|Roboto:100,300,400");
+
+#ui_layer_root {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    color: #ddd;
+    font-family: Montserrat;
+}
+
+#left_rail {
+    height: 100%;
+    width: 300px;
+    background-color:rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    box-sizing: border-box;
+}

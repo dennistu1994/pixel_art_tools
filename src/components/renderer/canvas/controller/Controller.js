@@ -30,6 +30,7 @@ class Controller {
             window.innerWidth,
             window.innerHeight,
         );
+        this.resetViewport();
         window.addEventListener('resize', ()=>{
             this.setSize(
                 window.innerWidth,
@@ -41,11 +42,23 @@ class Controller {
         window.requestAnimationFrame(this.draw);
 
         new Input(canvasElement, this);
+
+        window.addEventListener('mouseleave', ()=>{
+            this.state.dragging = false;
+        })
     }
 
     setSize(w: number, h: number){
         this.canvasElement.setAttribute("width", String(w));
         this.canvasElement.setAttribute("height", String(h));
+    }
+
+    resetViewport(){
+        this.state.scale = 1;
+        let paintingWidth = this.painting.width * 16;
+        let paintingHeight = this.painting.height * 16;
+        this.state.dx = (parseFloat(this.canvasElement.getAttribute('width')) - paintingWidth)/2;
+        this.state.dy = (parseFloat(this.canvasElement.getAttribute('height')) - paintingHeight)/2;
     }
 
     draw() {
@@ -55,15 +68,14 @@ class Controller {
             this.t = t;
 
             // set transform
-            let currentTransform = this.canvasContext.getTransform();
             this.canvasContext.setTransform(1, 0, 0, 1, 0, 0);
             this.canvasContext.fillStyle = `rgb(70,70,70)`;
             this.canvasContext.fillRect(0, 0, this.canvasElement.width, this.canvasElement.height);
 
             this.canvasContext.setTransform(
                 this.state.scale,
-                currentTransform.b,
-                currentTransform.c,
+                0,
+                0,
                 this.state.scale,
                 this.state.dx,
                 this.state.dy,
@@ -90,7 +102,9 @@ class Controller {
         this.state.dy += dy;
     }
 
-    // input callbacks
+    // ********************
+    // input event handlers
+    // ********************
     onPointerDown(e: PointerEvent){
         e.preventDefault();
         switch(e.button) {
@@ -126,7 +140,9 @@ class Controller {
         }
     }
 
-    onPointerCancel(e: PointerEvent){}
+    onPointerCancel(e: PointerEvent){
+        console.log(e);
+    }
 
     onWheel(e: WheelEvent){
         e.preventDefault();
