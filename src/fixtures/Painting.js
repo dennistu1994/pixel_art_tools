@@ -40,7 +40,7 @@ const randomRGB = ()=>{
 
 export const makePainting = (
     dimension: Vector2,
-) => {
+): Painting => {
     const [x, y] = dimension;
     const data = []
     for (var i = 0; i < x * y; i ++) {

@@ -1,4 +1,3 @@
-
 class Input {
     constructor(canvasElement, controller){
         canvasElement.addEventListener(
@@ -16,15 +15,6 @@ class Input {
         canvasElement.addEventListener(
             'wheel', controller.onWheel.bind(controller)
         );
-        // canvasElement.addEventListener(
-        //     "gesturestart", controller.onGestureStart
-        // );
-        // canvasElement.addEventListener(
-        //     "gesturechange", controller.OnGestureChange
-        // );
-        // canvasElement.addEventListener(
-        //     "gestureend", controller.onGestureEnd
-        // );
     }
 
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import Controller from './Controller';
+import Controller from './controller/Controller';
 import './style.scss';
 
 export class CanvasRenderer extends React.Component {
