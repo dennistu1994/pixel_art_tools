@@ -1,2 +1,3 @@
-import {UILayer} from './UILayer';
+// @flow
+import { UILayer } from "./UILayer";
 export default UILayer;

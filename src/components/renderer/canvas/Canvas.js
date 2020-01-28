@@ -1,25 +1,26 @@
 // @flow
-import React from 'react'
-import Controller from './controller/Controller';
-import './style.scss';
+import React from "react";
+import Controller from "./controller/Controller";
+import "./style.scss";
 
-type Props = {};
+type Props = {|
+  controller: Controller
+|};
 export class CanvasRenderer extends React.Component<Props> {
+  canvasElement: HTMLCanvasElement;
+  controller: Controller;
 
-    canvasElement: HTMLCanvasElement;
-    controller: Controller;
+  constructor(props: Props) {
+    super();
+    this.controller = props.controller;
+  }
 
-    constructor(){
-        super();
-        this.controller = new Controller();
-    }
+  onCanvasReady(canvasElement: HTMLCanvasElement) {
+    this.canvasElement = canvasElement;
+    this.controller.onCanvasReady(canvasElement);
+  }
 
-    onCanvasReady(canvasElement: HTMLCanvasElement) {
-        this.canvasElement = canvasElement;
-        this.controller.onCanvasReady(canvasElement);
-    }
-
-    render(){
-        return <canvas id="canvas_renderer" ref={this.onCanvasReady.bind(this)} />
-    }
+  render() {
+    return <canvas id="canvas_renderer" ref={this.onCanvasReady.bind(this)} />;
+  }
 }

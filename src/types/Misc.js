@@ -1,1 +1,2 @@
-export type Vector2 = [Number, Number]
+// @flow
+export type Vector2 = [number, number];

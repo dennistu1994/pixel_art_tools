@@ -22,7 +22,10 @@
     "css-loader": "^3.4.2",
     "flow-bin": "^0.116.1",
     "html-webpack-plugin": "^3.2.0",
+    "husky": "^4.2.1",
+    "lint-staged": "^10.0.3",
     "node-sass": "^4.13.1",
+    "prettier": "1.19.1",
     "react-hot-loader": "^4.12.18",
     "sass-loader": "^8.0.2",
     "script-ext-html-webpack-plugin": "^2.1.4",
@@ -36,5 +39,13 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-icons": "^3.8.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,css,md}": "prettier --write"
   }
 }
