@@ -1,2 +1,2 @@
-import {Scaffold} from './Scaffold';
+import { Scaffold } from "./Scaffold";
 export default Scaffold;
