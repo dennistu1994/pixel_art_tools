@@ -1,15 +1,21 @@
 // @flow
 import React from "react";
-import "./style.scss";
+import "./LeftRail.scss";
 import * as Tools from "components/ui_layer/tools";
+import { Section } from "components/util";
 
 type Props = {};
 class LeftRail extends React.Component<Props> {
   render() {
     return (
       <div id="left_rail">
-        <Tools.ResetViewport />
-        <Tools.Button />
+        <Section>
+          <Tools.ResetViewport />
+          <Tools.ResetViewport />
+        </Section>
+        <Section>
+          <Tools.ResetViewport />
+        </Section>
       </div>
     );
   }

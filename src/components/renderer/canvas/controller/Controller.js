@@ -1,5 +1,5 @@
 // @flow
-import { makePainting } from "fixtures/Painting";
+import { makePainting, makeGradient } from "fixtures/Painting";
 import Input from "./Input";
 import State from "./State";
 import type { Painting } from "types";
@@ -19,7 +19,7 @@ class Controller {
   constructor() {
     this.canvasReady = false;
     this.t = Date.now();
-    this.painting = makePainting([30, 30]);
+    this.painting = makeGradient([30, 30]);
     this.state = new State();
     this.toolsManager = new ToolsManager(this);
   }

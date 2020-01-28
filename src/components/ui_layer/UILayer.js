@@ -1,6 +1,6 @@
 // @flow
 import React from "react";
-import "./style.scss";
+import "./UILayer.scss";
 import LeftRail from "./LeftRail";
 import { IconContext } from "react-icons";
 type Props = {};
