@@ -3,7 +3,7 @@ import { makePainting, makeGradient } from "fixtures/Painting";
 import Input from "./Input";
 import State from "./State";
 import type { Painting } from "types";
-import ToolsManager from "./ToolsManager";
+import type { Tool } from "components/ui_layer/tools";
 
 class Controller {
   canvasReady: boolean;
@@ -12,7 +12,6 @@ class Controller {
   t: number;
   painting: Painting;
   state: State;
-  toolsManager: ToolsManager;
 
   draw: () => void;
 
@@ -21,7 +20,6 @@ class Controller {
     this.t = Date.now();
     this.painting = makeGradient([30, 30]);
     this.state = new State();
-    this.toolsManager = new ToolsManager(this);
   }
 
   onCanvasReady(canvasElement: HTMLCanvasElement) {
@@ -102,17 +100,29 @@ class Controller {
     this.state.dy += dy;
   }
 
+  startDragging(pointerId: number) {
+    this.state.dragging = true;
+    this.canvasElement.setPointerCapture(String(pointerId));
+  }
+
+  stopDragging(pointerId: number) {
+    this.state.dragging = false;
+    this.canvasElement.releasePointerCapture(String(pointerId));
+  }
+
   // ********************
   // input event handlers
   // ********************
   onPointerDown(e: PointerEvent) {
     e.preventDefault();
+    if (this.state.activeTool && this.state.activeTool.onPointerDown) {
+      this.state.activeTool.onPointerDown(e);
+    }
     switch (e.button) {
       case 0:
         break;
       case 1:
-        this.state.dragging = true;
-        this.canvasElement.setPointerCapture(String(e.pointerId));
+        this.startDragging(e.pointerId);
         break;
       case 2:
         break;
@@ -128,12 +138,14 @@ class Controller {
   }
 
   onPointerUp(e: PointerEvent) {
+    if (this.state.activeTool && this.state.activeTool.onPointerDown) {
+      this.state.activeTool.onPointerUp(e);
+    }
     switch (e.button) {
       case 0:
         break;
       case 1:
-        this.state.dragging = false;
-        this.canvasElement.releasePointerCapture(String(e.pointerId));
+        this.stopDragging(e.pointerId);
         break;
       case 2:
         break;
@@ -142,9 +154,7 @@ class Controller {
     }
   }
 
-  onPointerCancel(e: PointerEvent) {
-    console.log(e);
-  }
+  onPointerCancel(e: PointerEvent) {}
 
   onWheel(e: WheelEvent) {
     e.preventDefault();
@@ -160,6 +170,14 @@ class Controller {
     }
     this.state.scale -= ds;
     this.translate(ds * point.x, ds * point.y);
+  }
+
+  setActiveTool(tool: Tool) {
+    if (this.state.activeTool === tool) return;
+    if (this.state.activeTool) {
+      this.state.activeTool.deactivate();
+    }
+    this.state.activeTool = tool;
   }
 }
 

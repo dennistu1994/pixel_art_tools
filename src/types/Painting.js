@@ -5,12 +5,14 @@ export type Painting = {
   data: Array<Color4>
 };
 
-type Color3 = {
+// represents a RGB color
+export type Color3 = {
   r: number,
   g: number,
   b: number
 };
+
 // represents a RGBA color
-type Color4 = Color3 & {
+export type Color4 = Color3 & {
   a: number
 };

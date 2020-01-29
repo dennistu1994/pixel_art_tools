@@ -1,7 +1,7 @@
 // @flow
 import React from "react";
 import Controller from "./controller/Controller";
-import "./style.scss";
+import "./Canvas.scss";
 
 type Props = {|
   controller: Controller

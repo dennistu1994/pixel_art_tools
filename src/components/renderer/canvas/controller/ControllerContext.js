@@ -2,7 +2,8 @@
 import React from "react";
 import Controller from "./Controller";
 
-const ControllerContext: React$Context<?Controller> = React.createContext();
+let _ = new Controller(); // for simplifying flow typechecking, methods should never be called on this object
+const ControllerContext: React$Context<Controller> = React.createContext(_);
 
 type Props = {
   controller: Controller,

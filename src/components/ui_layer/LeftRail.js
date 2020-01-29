@@ -12,9 +12,11 @@ class LeftRail extends React.Component<Props> {
         <Section>
           <Tools.ResetViewport />
           <Tools.ResetViewport />
+          <Tools.Pan />
         </Section>
         <Section>
           <Tools.ResetViewport />
+          <Tools.BlackPen />
         </Section>
       </div>
     );

@@ -1,24 +1,20 @@
 // @flow
 import React from "react";
 import classnames from "classnames";
-import "./style.scss";
+import "./Button.scss";
 
-type Props = {};
-class Button extends React.Component<Props> {
-  extraClasses() {}
-
-  constructor(props: Props) {
-    super(props);
-  }
-
-  renderButtonContent(): React$Element<any> | string {
-    return "not implemented";
-  }
-
+type Props = {
+  extraClasses?: ?(string[]),
+  children: ?React$Node,
+  onClick?: () => void
+};
+export class Button extends React.Component<Props> {
   render() {
-    let buttonContent = this.renderButtonContent();
-    let classNames = classnames("tool_button", this.extraClasses());
-    return <span className={classNames}>{buttonContent}</span>;
+    let classNames = classnames("tool_button", this.props.extraClasses);
+    return (
+      <span className={classNames} onClick={this.props.onClick}>
+        {this.props.children}
+      </span>
+    );
   }
 }
-export default Button;
