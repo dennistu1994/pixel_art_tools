@@ -74,3 +74,25 @@ export const makeGradient = (dimension: Vector2): Painting => {
     data: data
   };
 };
+
+export const makeWhiteCanvas = (dimension: Vector2): Painting => {
+  const [x, y] = dimension;
+  const data = [];
+  const maxV = x ** 2 + y ** 2;
+  for (var i = 0; i < y; i++) {
+    for (var j = 0; j < x; j++) {
+      let v = 255;
+      data.push({
+        r: v,
+        g: v,
+        b: v,
+        a: v
+      });
+    }
+  }
+  return {
+    width: x,
+    height: y,
+    data: data
+  };
+};

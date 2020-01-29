@@ -1,9 +1,11 @@
 // @flow
-import { makePainting, makeGradient } from "fixtures/Painting";
+import { makePainting, makeGradient, makeWhiteCanvas } from "fixtures";
 import Input from "./Input";
 import State from "./State";
-import type { Painting } from "types";
-import type { Tool } from "components/ui_layer/tools";
+import type { Painting, Color4 } from "types";
+import type { PointerTool } from "components/ui_layer/tools";
+
+const PIXEL_SIZE = 16;
 
 class Controller {
   canvasReady: boolean;
@@ -18,7 +20,7 @@ class Controller {
   constructor() {
     this.canvasReady = false;
     this.t = Date.now();
-    this.painting = makeGradient([30, 30]);
+    this.painting = makeWhiteCanvas([40, 40]);
     this.state = new State();
   }
 
@@ -39,7 +41,10 @@ class Controller {
 
     window.addEventListener("mouseleave", () => {
       this.state.dragging = false;
+      console.log("mouse left the window");
     });
+
+    this.canvasContext.lineWidth = 0.5;
   }
 
   setSize(w: number, h: number) {
@@ -49,8 +54,8 @@ class Controller {
 
   resetViewport() {
     this.state.scale = 1;
-    let paintingWidth = this.painting.width * 16;
-    let paintingHeight = this.painting.height * 16;
+    let paintingWidth = this.painting.width * PIXEL_SIZE;
+    let paintingHeight = this.painting.height * PIXEL_SIZE;
     this.state.dx =
       (parseFloat(this.canvasElement.getAttribute("width")) - paintingWidth) /
       2;
@@ -62,7 +67,7 @@ class Controller {
   draw() {
     window.requestAnimationFrame(this.draw);
     const t = Date.now();
-    if (t - this.t > 30) {
+    if (t - this.t > 33) {
       this.t = t;
 
       // set transform
@@ -90,7 +95,18 @@ class Controller {
         let x = i % this.painting.width;
         let y = (i - x) / this.painting.width;
         this.canvasContext.fillStyle = `rgb(${r},${g},${b})`;
-        this.canvasContext.fillRect(x * 16, y * 16, 16, 16);
+        this.canvasContext.fillRect(
+          x * PIXEL_SIZE,
+          y * PIXEL_SIZE,
+          PIXEL_SIZE,
+          PIXEL_SIZE
+        );
+        this.canvasContext.strokeRect(
+          x * PIXEL_SIZE,
+          y * PIXEL_SIZE,
+          PIXEL_SIZE,
+          PIXEL_SIZE
+        );
       }
     }
   }
@@ -100,14 +116,29 @@ class Controller {
     this.state.dy += dy;
   }
 
-  startDragging(pointerId: number) {
+  startDragging() {
     this.state.dragging = true;
-    this.canvasElement.setPointerCapture(String(pointerId));
   }
 
-  stopDragging(pointerId: number) {
+  stopDragging() {
     this.state.dragging = false;
-    this.canvasElement.releasePointerCapture(String(pointerId));
+  }
+
+  paintPixel(x: number, y: number, color: Color4) {
+    const i = y * this.painting.width + x;
+    if (x < 0 || y < 0 || x >= this.painting.width || y >= this.painting.height)
+      return;
+    this.painting.data[i] = color;
+  }
+
+  paintPixelFromPointerEvent(e: PointerEvent, color: Color4) {
+    let { x: xS, y: yS } = this.canvasContext
+      .getTransform()
+      .inverse()
+      .transformPoint(e);
+    let x = Math.floor(xS / PIXEL_SIZE);
+    let y = Math.floor(yS / PIXEL_SIZE);
+    this.paintPixel(x, y, color);
   }
 
   // ********************
@@ -115,6 +146,7 @@ class Controller {
   // ********************
   onPointerDown(e: PointerEvent) {
     e.preventDefault();
+    this.canvasElement.setPointerCapture(String(e.pointerId));
     if (this.state.activeTool && this.state.activeTool.onPointerDown) {
       this.state.activeTool.onPointerDown(e);
     }
@@ -122,7 +154,7 @@ class Controller {
       case 0:
         break;
       case 1:
-        this.startDragging(e.pointerId);
+        this.startDragging();
         break;
       case 2:
         break;
@@ -132,12 +164,19 @@ class Controller {
   }
 
   onPointerMove(e: PointerEvent) {
+    e.preventDefault();
     if (this.state.dragging == true) {
       this.translate(e.movementX, e.movementY);
+    }
+    if (this.state.activeTool && this.state.activeTool.onPointerDown) {
+      this.state.activeTool.onPointerMove(e);
     }
   }
 
   onPointerUp(e: PointerEvent) {
+    e.preventDefault();
+    this.canvasElement.releasePointerCapture(String(e.pointerId));
+
     if (this.state.activeTool && this.state.activeTool.onPointerDown) {
       this.state.activeTool.onPointerUp(e);
     }
@@ -145,7 +184,7 @@ class Controller {
       case 0:
         break;
       case 1:
-        this.stopDragging(e.pointerId);
+        this.stopDragging();
         break;
       case 2:
         break;
@@ -154,7 +193,9 @@ class Controller {
     }
   }
 
-  onPointerCancel(e: PointerEvent) {}
+  onPointerCancel(e: PointerEvent) {
+    e.preventDefault();
+  }
 
   onWheel(e: WheelEvent) {
     e.preventDefault();
@@ -162,7 +203,7 @@ class Controller {
       .getTransform()
       .inverse()
       .transformPoint(e);
-    let ds = e.deltaY * 0.002;
+    let ds = e.deltaY * 0.004;
     if (this.state.scale - ds < 0.5) {
       ds = this.state.scale - 0.5;
     } else if (this.state.scale - ds > 6) {
@@ -172,7 +213,7 @@ class Controller {
     this.translate(ds * point.x, ds * point.y);
   }
 
-  setActiveTool(tool: Tool) {
+  setActivePointerTool(tool: PointerTool) {
     if (this.state.activeTool === tool) return;
     if (this.state.activeTool) {
       this.state.activeTool.deactivate();

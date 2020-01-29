@@ -1,23 +1,22 @@
 // @flow
 import React from "react";
 import { Button } from "./Button";
-import type { Tool } from "./";
+import type { PointerTool } from "./";
 import type { Color3 } from "types";
 import {
   ControllerContextConsumer,
   Controller
 } from "components/renderer/canvas";
 import { MdPanTool } from "react-icons/md";
-import { debug } from "utils";
 
 type Props = {};
 type State = {
   active: boolean
 };
 
-export class Pan extends React.Component<Props, State> implements Tool {
+export class Pan extends React.Component<Props, State> implements PointerTool {
   state: State;
-  controller: ?Controller;
+  controller: Controller;
 
   constructor(props: Props) {
     super(props);
@@ -27,7 +26,7 @@ export class Pan extends React.Component<Props, State> implements Tool {
   }
 
   onClick(controller: Controller) {
-    controller.setActiveTool(this);
+    controller.setActivePointerTool(this);
     this.setState({
       active: true
     });
@@ -61,13 +60,15 @@ export class Pan extends React.Component<Props, State> implements Tool {
 
   onPointerDown(e: PointerEvent) {
     if (this.controller) {
-      this.controller.startDragging(e.pointerId);
+      this.controller.startDragging();
     }
   }
 
+  onPointerMove(e: PointerEvent) {}
+
   onPointerUp(e: PointerEvent) {
     if (this.controller) {
-      this.controller.stopDragging(e.pointerId);
+      this.controller.stopDragging();
     }
   }
 }

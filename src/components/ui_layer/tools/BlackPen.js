@@ -1,8 +1,8 @@
 // @flow
 import React from "react";
 import { Button } from "./Button";
-import type { Tool } from "./";
-import type { Color3 } from "types";
+import type { PointerTool } from "./";
+import type { Color4 } from "types";
 import {
   ControllerContextConsumer,
   Controller
@@ -14,10 +14,13 @@ type State = {
   active: boolean
 };
 
-export class BlackPen extends React.Component<Props, State> implements Tool {
+export class BlackPen extends React.Component<Props, State>
+  implements PointerTool {
   state: State;
+  color: Color4;
+  controller: Controller;
 
-  color: Color3;
+  pointerDown: boolean;
 
   constructor(props: Props) {
     super(props);
@@ -27,12 +30,14 @@ export class BlackPen extends React.Component<Props, State> implements Tool {
     this.color = {
       r: 0,
       g: 0,
-      b: 0
+      b: 0,
+      a: 1
     };
+    this.pointerDown = false;
   }
 
   onClick(controller: Controller) {
-    controller.setActiveTool(this);
+    controller.setActivePointerTool(this);
     this.setState({
       active: true
     });
@@ -47,20 +52,39 @@ export class BlackPen extends React.Component<Props, State> implements Tool {
   render() {
     return (
       <ControllerContextConsumer>
-        {controller => (
-          <Button
-            extraClasses={this.state.active ? ["selected"] : null}
-            onClick={() => {
-              this.onClick(controller);
-            }}
-          >
-            <GoPencil />
-          </Button>
-        )}
+        {controller => {
+          this.controller = controller;
+          return (
+            <Button
+              extraClasses={this.state.active ? ["selected"] : null}
+              onClick={() => {
+                this.onClick(controller);
+              }}
+            >
+              <GoPencil />
+            </Button>
+          );
+        }}
       </ControllerContextConsumer>
     );
   }
 
-  onPointerDown(e: PointerEvent) {}
-  onPointerUp(e: PointerEvent) {}
+  onPointerDown(e: PointerEvent) {
+    if (e.button !== 0) return;
+    this.controller.paintPixelFromPointerEvent(e, this.color);
+    this.controller.canvasElement.setPointerCapture(String(e.pointerId));
+    this.pointerDown = true;
+  }
+
+  onPointerMove(e: PointerEvent) {
+    if (this.pointerDown) {
+      this.controller.paintPixelFromPointerEvent(e, this.color);
+    }
+  }
+
+  onPointerUp(e: PointerEvent) {
+    if (e.button !== 0) return;
+    this.pointerDown = false;
+    this.controller.canvasElement.releasePointerCapture(String(e.pointerId));
+  }
 }

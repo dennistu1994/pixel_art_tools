@@ -6,7 +6,6 @@ import {
   ControllerContextConsumer,
   Controller
 } from "components/renderer/canvas";
-import type { Tool } from "./";
 
 type Props = {};
 export class ResetViewport extends React.Component<Props> {

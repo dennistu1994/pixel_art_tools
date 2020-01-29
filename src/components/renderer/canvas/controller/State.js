@@ -1,5 +1,5 @@
 // @flow
-import type { Tool } from "components/ui_layer/tools";
+import type { PointerTool } from "components/ui_layer/tools";
 
 class State {
   scale: number;
@@ -8,7 +8,7 @@ class State {
 
   dragging: boolean;
 
-  activeTool: ?Tool;
+  activeTool: ?PointerTool;
 
   constructor() {
     this.scale = 1;
