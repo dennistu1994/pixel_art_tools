@@ -21,6 +21,7 @@ class Controller {
     this.canvasReady = false;
     this.t = Date.now();
     this.painting = makeWhiteCanvas([40, 40]);
+    window.painting = this.painting;
     this.state = new State();
   }
 
@@ -91,7 +92,7 @@ class Controller {
 
       // draw painting
       for (var i = 0; i < this.painting.data.length; i++) {
-        const { r, g, b } = this.painting.data[i];
+        const [r, g, b] = this.painting.data[i];
         let x = i % this.painting.width;
         let y = (i - x) / this.painting.width;
         this.canvasContext.fillStyle = `rgb(${r},${g},${b})`;

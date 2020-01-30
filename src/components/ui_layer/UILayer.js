@@ -22,9 +22,11 @@ export class UILayer extends React.Component<Props> {
           size: "30px"
         }}
       >
-        <div id="ui_layer_root">
-          <LeftRail />
-        </div>
+        <UILayerStateContextProvider state={this.uiLayerState}>
+          <div id="ui_layer_root">
+            <LeftRail />
+          </div>
+        </UILayerStateContextProvider>
       </IconContext.Provider>
     );
   }

@@ -1,13 +1,14 @@
 // @flow
 import type { Color4 } from "types";
 import React from "react";
-
+import { RandomRGB } from "fixtures";
 class UILayerStateComponent<T> {
   value: T;
   listeners: ((T) => void)[];
 
   constructor(value: T) {
     this.value = value;
+    this.listeners = [];
   }
 
   set(value: T) {
@@ -21,6 +22,7 @@ class UILayerStateComponent<T> {
 
   subscribe(callback: T => void): number {
     this.listeners.push(callback);
+    callback(this.value);
     return this.listeners.length - 1;
   }
 
@@ -34,10 +36,16 @@ class UILayerStateComponent<T> {
 
 export class UILayerState {
   color: UILayerStateComponent<Color4>;
+
+  constructor() {
+    this.color = new UILayerStateComponent<Color4>(RandomRGB());
+  }
 }
 
 const _ = new UILayerState();
-const UILayerStateContext: React$Context<UILayerState> = React.createContext(_);
+export const UILayerStateContext: React$Context<UILayerState> = React.createContext(
+  _
+);
 
 type Props = {
   state: UILayerState,

@@ -6,13 +6,7 @@ export type Painting = {
 };
 
 // represents a RGB color
-export type Color3 = {
-  r: number,
-  g: number,
-  b: number
-};
+export type Color3 = [number, number, number];
 
 // represents a RGBA color
-export type Color4 = Color3 & {
-  a: number
-};
+export type Color4 = [number, number, number, number];

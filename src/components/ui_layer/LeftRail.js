@@ -2,7 +2,7 @@
 import React from "react";
 import "./LeftRail.scss";
 import * as Tools from "components/ui_layer/tools";
-import { Section } from "components/util";
+import { Section } from "components/utils";
 
 type Props = {};
 class LeftRail extends React.Component<Props> {
@@ -18,7 +18,9 @@ class LeftRail extends React.Component<Props> {
           <Tools.ResetViewport />
           <Tools.BlackPen />
         </Section>
-        <Section />
+        <Section>
+          Tool Color <Tools.ColorDisplay />
+        </Section>
       </div>
     );
   }
