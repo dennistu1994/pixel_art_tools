@@ -20,8 +20,7 @@ class Controller {
   constructor() {
     this.canvasReady = false;
     this.t = Date.now();
-    this.painting = makeWhiteCanvas([40, 40]);
-    window.painting = this.painting;
+    this.painting = makeWhiteCanvas([20, 20]);
     this.state = new State();
   }
 
