@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack -p --config webpack.prod.config.babel.js",
     "dev": "webpack-dev-server --hot --inline --host 0.0.0.0",
+    "start": "http-server dist",
     "flow": "flow src/",
     "prettier": "prettier --write 'src/**/*.js'"
   },
@@ -23,7 +24,6 @@
     "css-loader": "^3.4.2",
     "flow-bin": "^0.116.1",
     "html-webpack-plugin": "^3.2.0",
-    "http-server": "^0.12.1",
     "husky": "^4.2.1",
     "lint-staged": "^10.0.3",
     "node-sass": "^4.13.1",
@@ -39,6 +39,7 @@
   },
   "dependencies": {
     "classnames": "^2.2.6",
+    "http-server": "^0.12.1",
     "react": "^16.12.0",
     "react-color": "^2.18.0",
     "react-dom": "^16.12.0",
