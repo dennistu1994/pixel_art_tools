@@ -4,4 +4,5 @@ export { Button } from "./Button";
 export { BlackPen } from "./BlackPen";
 export { Pan } from "./Pan";
 export { ColorDisplay } from "./ColorDisplay";
+export { ColorPicker } from "./ColorPicker";
 export type { PointerTool } from "./Tool";

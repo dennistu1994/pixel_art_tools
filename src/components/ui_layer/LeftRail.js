@@ -21,6 +21,12 @@ class LeftRail extends React.Component<Props> {
         <Section>
           Tool Color <Tools.ColorDisplay />
         </Section>
+        <Section>
+          Tool Color <Tools.ColorDisplay />
+        </Section>
+        <Section>
+          <Tools.ColorPicker />
+        </Section>
       </div>
     );
   }
