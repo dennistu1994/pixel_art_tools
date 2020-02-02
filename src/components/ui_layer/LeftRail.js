@@ -5,7 +5,7 @@ import * as Tools from "components/ui_layer/tools";
 import { Section } from "components/utils";
 
 type Props = {};
-class LeftRail extends React.Component<Props> {
+export class LeftRail extends React.Component<Props> {
   render() {
     return (
       <div id="left_rail">
@@ -25,5 +25,3 @@ class LeftRail extends React.Component<Props> {
     );
   }
 }
-
-export default LeftRail;

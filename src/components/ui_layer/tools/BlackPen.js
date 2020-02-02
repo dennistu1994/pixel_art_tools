@@ -38,6 +38,8 @@ export class BlackPen extends React.Component<Props, State>
 
   componentDidMount() {
     this.context.color.subscribe(color => this.setColor(color));
+    // start with pen tool by default
+    this.activate(this.controller);
   }
 
   activate(controller: Controller) {

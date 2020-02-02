@@ -1,0 +1,8 @@
+@import 'Rail';
+
+#right_rail {
+    @include rail();
+    right: 0;
+    float:right;
+    pointer-events: all;
+}

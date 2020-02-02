@@ -4,6 +4,8 @@ import Input from "./Input";
 import State from "./State";
 import type { Painting, Color4, Vector2 } from "types";
 import type { PointerTool } from "components/ui_layer/tools";
+import { Action } from "history";
+import { IdenticalColor4 } from "utils";
 
 const PIXEL_SIZE = 16;
 
@@ -18,6 +20,8 @@ class Controller {
   draw: () => void;
 
   constructor() {
+    window.controller = this;
+
     this.canvasReady = false;
     this.t = Date.now();
     this.painting = makeWhiteCanvas([20, 20]);
@@ -138,22 +142,35 @@ class Controller {
     this.state.dragging = false;
   }
 
-  paintPixel(x: number, y: number, color: Color4) {
+  // returns true if a change happened, false otherwise
+  paintPixel(x: number, y: number, color: Color4): boolean {
     const i = y * this.painting.width + x;
     if (x < 0 || y < 0 || x >= this.painting.width || y >= this.painting.height)
-      return;
+      return false;
+    if (IdenticalColor4(color, this.painting.data[i])) {
+      return false;
+    }
     this.painting.data[i] = color;
     this.state.dirty = true;
+    return true;
   }
 
-  paintPixelFromPointerEvent(e: PointerEvent, color: Color4) {
+  // if action is provided, it will be used to keep track of this call, otherwise a new one will be returned
+  paintPixelFromPointerEvent(
+    e: PointerEvent,
+    color: Color4,
+    action: ?PaintAction
+  ): ?PaintAction {
+    if (!action) {
+      action = new PaintAction(color);
+    }
     let { x: xS, y: yS } = this.canvasContext
       .getTransform()
       .inverse()
       .transformPoint(e);
     let x = Math.floor(xS / PIXEL_SIZE);
     let y = Math.floor(yS / PIXEL_SIZE);
-    this.paintPixel(x, y, color);
+    let success = this.paintPixel(x, y, color);
   }
 
   getColorFromPointerEvent(e: PointerEvent): Color4 {
@@ -252,8 +269,25 @@ class Controller {
       tool.deactivate();
     }
     if (this.state.lastActiveTool) this.state.lastActiveTool.activate(this);
-    this.state.lastActiveTool = null;
   }
+}
+
+class PaintAction implements Action {
+  // each paint action consist of an array of positions, as well as a color
+  prevState: Map<Vector2, Color4>;
+  newColor: Color4;
+
+  constructor(color: Color4) {
+    this.newColor = color;
+    this.prevState = new Map();
+  }
+
+  add(pos: Vector2, prevColor: Color4) {
+    this.prevState.set(pos, prevColor);
+  }
+
+  undo() {}
+  redo() {}
 }
 
 export default Controller;

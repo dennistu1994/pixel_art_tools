@@ -1,7 +1,8 @@
 // @flow
 import React from "react";
 import "./UILayer.scss";
-import LeftRail from "./LeftRail";
+import { LeftRail } from "./LeftRail";
+import { RightRail } from "./RightRail";
 import { IconContext } from "react-icons";
 import { UILayerState, UILayerStateContextProvider } from "./";
 
@@ -25,6 +26,7 @@ export class UILayer extends React.Component<Props> {
         <UILayerStateContextProvider state={this.uiLayerState}>
           <div id="ui_layer_root">
             <LeftRail />
+            <RightRail />
           </div>
         </UILayerStateContextProvider>
       </IconContext.Provider>
