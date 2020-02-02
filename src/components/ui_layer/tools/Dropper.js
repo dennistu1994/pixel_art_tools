@@ -2,21 +2,26 @@
 import React from "react";
 import { Button } from "./Button";
 import type { PointerTool } from "./";
-import type { Color3 } from "types";
+import { FaEyeDropper } from "react-icons/fa";
 import {
-  ControllerContextConsumer,
-  Controller
+  Controller,
+  ControllerContextConsumer
 } from "components/renderer/canvas";
-import { MdPanTool } from "react-icons/md";
+import { setClassContextType } from "utils";
+import {
+  UILayerState,
+  UILayerStateContext
+} from "components/ui_layer/UILayerState";
 
 type Props = {};
 type State = {
   active: boolean
 };
-
-export class Pan extends React.Component<Props, State> implements PointerTool {
-  state: State;
+export class Dropper extends React.Component<Props, State>
+  implements PointerTool {
   controller: Controller;
+  context: UILayerState;
+  pointerDown: boolean;
 
   constructor(props: Props) {
     super(props);
@@ -26,7 +31,7 @@ export class Pan extends React.Component<Props, State> implements PointerTool {
   }
 
   activate(controller: Controller) {
-    controller.setActivePointerTool(this);
+    controller.setTempPointerTool(this);
     this.setState({
       active: true
     });
@@ -50,7 +55,7 @@ export class Pan extends React.Component<Props, State> implements PointerTool {
                 this.activate(controller);
               }}
             >
-              <MdPanTool />
+              <FaEyeDropper />
             </Button>
           );
         }}
@@ -59,16 +64,21 @@ export class Pan extends React.Component<Props, State> implements PointerTool {
   }
 
   onPointerDown(e: PointerEvent) {
-    if (this.controller) {
-      this.controller.startDragging();
-    }
+    if (e.button !== 0) return;
+    this.pointerDown = true;
+    this.context.color.set(this.controller.getColorFromPointerEvent(e));
   }
 
-  onPointerMove(e: PointerEvent) {}
+  onPointerMove(e: PointerEvent) {
+    if (this.pointerDown) {
+      this.context.color.set(this.controller.getColorFromPointerEvent(e));
+    }
+  }
 
   onPointerUp(e: PointerEvent) {
-    if (this.controller) {
-      this.controller.stopDragging();
-    }
+    if (e.button !== 0) return;
+    this.pointerDown = false;
+    this.controller.unsetTempPointerTool(this);
   }
 }
+setClassContextType(Dropper, UILayerStateContext);

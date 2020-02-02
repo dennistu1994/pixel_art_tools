@@ -5,7 +5,7 @@ import CanvasRenderer, {
   Controller
 } from "components/renderer/canvas";
 import UILayer from "components/ui_layer";
-
+import { HotkeyManager } from "components/hotkey";
 type Props = {};
 export class Scaffold extends React.Component<Props> {
   canvasController: Controller;
@@ -24,6 +24,7 @@ export class Scaffold extends React.Component<Props> {
         <ControllerContextProvider controller={this.canvasController}>
           {uiLayer}
         </ControllerContextProvider>
+        <HotkeyManager />
       </>
     );
   }

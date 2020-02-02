@@ -1,5 +1,7 @@
 // @flow
 import React from "react";
+import "./Section.scss";
+
 type Props = {
   children?: React$Node
 };

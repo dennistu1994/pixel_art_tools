@@ -5,10 +5,12 @@ class State {
   scale: number;
   dx: number;
   dy: number;
+  dirty: boolean;
 
   dragging: boolean;
 
   activeTool: ?PointerTool;
+  lastActiveTool: ?PointerTool;
 
   constructor() {
     this.scale = 1;
@@ -16,6 +18,8 @@ class State {
     this.dy = 0;
     this.dragging = false;
     this.activeTool = null;
+    this.lastActiveTool = null;
+    this.dirty = true;
   }
 }
 

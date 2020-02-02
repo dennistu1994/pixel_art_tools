@@ -40,7 +40,7 @@ export class BlackPen extends React.Component<Props, State>
     this.context.color.subscribe(color => this.setColor(color));
   }
 
-  onClick(controller: Controller) {
+  activate(controller: Controller) {
     controller.setActivePointerTool(this);
     this.setState({
       active: true
@@ -66,7 +66,7 @@ export class BlackPen extends React.Component<Props, State>
             <Button
               extraClasses={this.state.active ? ["selected"] : null}
               onClick={() => {
-                this.onClick(controller);
+                this.activate(controller);
               }}
             >
               <GoPencil />
@@ -80,7 +80,6 @@ export class BlackPen extends React.Component<Props, State>
   onPointerDown(e: PointerEvent) {
     if (e.button !== 0) return;
     this.controller.paintPixelFromPointerEvent(e, this.color);
-    this.controller.canvasElement.setPointerCapture(String(e.pointerId));
     this.pointerDown = true;
   }
 
@@ -93,7 +92,6 @@ export class BlackPen extends React.Component<Props, State>
   onPointerUp(e: PointerEvent) {
     if (e.button !== 0) return;
     this.pointerDown = false;
-    this.controller.canvasElement.releasePointerCapture(String(e.pointerId));
   }
 }
 setClassContextType(BlackPen, UILayerStateContext);

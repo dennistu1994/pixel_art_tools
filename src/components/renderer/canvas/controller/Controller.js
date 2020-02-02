@@ -2,7 +2,7 @@
 import { makePainting, makeGradient, makeWhiteCanvas } from "fixtures";
 import Input from "./Input";
 import State from "./State";
-import type { Painting, Color4 } from "types";
+import type { Painting, Color4, Vector2 } from "types";
 import type { PointerTool } from "components/ui_layer/tools";
 
 const PIXEL_SIZE = 16;
@@ -50,9 +50,11 @@ class Controller {
   setSize(w: number, h: number) {
     this.canvasElement.setAttribute("width", String(w));
     this.canvasElement.setAttribute("height", String(h));
+    this.state.dirty = true;
   }
 
   resetViewport() {
+    this.state.dirty = true;
     this.state.scale = 1;
     let paintingWidth = this.painting.width * PIXEL_SIZE;
     let paintingHeight = this.painting.height * PIXEL_SIZE;
@@ -67,7 +69,8 @@ class Controller {
   draw() {
     window.requestAnimationFrame(this.draw);
     const t = Date.now();
-    if (t - this.t > 33) {
+    if (t - this.t > 33 && this.state.dirty) {
+      this.state.dirty = false;
       this.t = t;
 
       // set transform
@@ -114,6 +117,17 @@ class Controller {
   translate(dx: number, dy: number) {
     this.state.dx += dx;
     this.state.dy += dy;
+    this.state.dirty = true;
+  }
+
+  scale(point: { x: number, y: number }, ds: number) {
+    if (this.state.scale - ds < 0.5) {
+      ds = this.state.scale - 0.5;
+    } else if (this.state.scale - ds > 6) {
+      ds = this.state.scale - 6;
+    }
+    this.state.scale -= ds;
+    this.translate(ds * point.x, ds * point.y);
   }
 
   startDragging() {
@@ -129,6 +143,7 @@ class Controller {
     if (x < 0 || y < 0 || x >= this.painting.width || y >= this.painting.height)
       return;
     this.painting.data[i] = color;
+    this.state.dirty = true;
   }
 
   paintPixelFromPointerEvent(e: PointerEvent, color: Color4) {
@@ -139,6 +154,17 @@ class Controller {
     let x = Math.floor(xS / PIXEL_SIZE);
     let y = Math.floor(yS / PIXEL_SIZE);
     this.paintPixel(x, y, color);
+  }
+
+  getColorFromPointerEvent(e: PointerEvent): Color4 {
+    let { x: xS, y: yS } = this.canvasContext
+      .getTransform()
+      .inverse()
+      .transformPoint(e);
+    let x = Math.floor(xS / PIXEL_SIZE);
+    let y = Math.floor(yS / PIXEL_SIZE);
+    let i = this.painting.width * y + x;
+    return this.painting.data[i];
   }
 
   // ********************
@@ -204,21 +230,29 @@ class Controller {
       .inverse()
       .transformPoint(e);
     let ds = e.deltaY * 0.004;
-    if (this.state.scale - ds < 0.5) {
-      ds = this.state.scale - 0.5;
-    } else if (this.state.scale - ds > 6) {
-      ds = this.state.scale - 6;
-    }
-    this.state.scale -= ds;
-    this.translate(ds * point.x, ds * point.y);
+    this.scale(point, ds);
   }
 
   setActivePointerTool(tool: PointerTool) {
+    this.setTempPointerTool(tool);
+    this.state.lastActiveTool = tool;
+  }
+
+  setTempPointerTool(tool: PointerTool) {
     if (this.state.activeTool === tool) return;
+
     if (this.state.activeTool) {
       this.state.activeTool.deactivate();
     }
     this.state.activeTool = tool;
+  }
+
+  unsetTempPointerTool(tool: PointerTool) {
+    if (this.state.activeTool === tool) {
+      tool.deactivate();
+    }
+    if (this.state.lastActiveTool) this.state.lastActiveTool.activate(this);
+    this.state.lastActiveTool = null;
   }
 }
 

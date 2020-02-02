@@ -11,15 +11,9 @@ class LeftRail extends React.Component<Props> {
       <div id="left_rail">
         <Section>
           <Tools.ResetViewport />
-          <Tools.ResetViewport />
           <Tools.Pan />
-        </Section>
-        <Section>
-          <Tools.ResetViewport />
           <Tools.BlackPen />
-        </Section>
-        <Section>
-          Tool Color <Tools.ColorDisplay />
+          <Tools.Dropper />
         </Section>
         <Section>
           Tool Color <Tools.ColorDisplay />

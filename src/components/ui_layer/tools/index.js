@@ -5,4 +5,5 @@ export { BlackPen } from "./BlackPen";
 export { Pan } from "./Pan";
 export { ColorDisplay } from "./ColorDisplay";
 export { ColorPicker } from "./ColorPicker";
-export type { PointerTool } from "./Tool";
+export { Dropper } from "./Dropper";
+export type * from "./Tool";
